@@ -21,10 +21,18 @@ def getVLSMInfo() -> list:
             'network_subnetmask' : ''
         })
 
+    # get the number of bits for every subnet
+    getBitsSubnet(network_layout)
+
+    # get the mask for every subnet
+    getMaskSubnet(network_layout)
+
+    # transform cidr mask to a original one
+    transformMask(network_layout)
     return network_layout
 
 # get how many bits every subnet needs
-def getBitsSubnet(network: list) -> list:
+def getBitsSubnet(network: list):
 
     for i in network:
         if i['network_host_number'] == 1:
@@ -47,18 +55,15 @@ def getBitsSubnet(network: list) -> list:
             i['network_bits'] = 9
         elif i['network_host_number'] >= 511 and i['network_host_number'] <= 1022:
             i['network_bits'] = 10
-    return network
 
 # get the mask for every subnet
-def getMaskSubnet(network: list) -> list:
+def getMaskSubnet(network: list):
 
     for i in network:
         i['network_cidr'] = 32 - i['network_bits']
 
-    return network
-
 # transform cidr to original mask
-def transformMask(network: list) -> list:
+def transformMask(network: list):
 
     for i in network:
         if i['network_cidr'] == 24:
@@ -79,25 +84,14 @@ def transformMask(network: list) -> list:
             i['network_subnetmask'] = '255.255.255.254'
         elif i['network_cidr'] == 32:
             i['network_subnetmask'] = '255.255.255.255'
-    return network
 
 # calculate the VLSM
 def calcVLSM() -> str:
-    subnets = getVLSMInfo()
+    print(getVLSMInfo())
 
-    # get the number of bits for every subnet
-    network_bits = getBitsSubnet(subnets)
+    #calcs VLSMs ...
 
-    # get the mask for every subnet
-    network_mask = getMaskSubnet(network_bits)
-    network_original_mask = transformMask(network_mask)
-
-    # get the range for a specific subnet (256 - network_mask last octet)
-    #fazer um dicionario para cada subrede
-
-
-    print(network_original_mask)
-
+    return 'someting'
 
 def main():
     if len(sys.argv) > 1:
