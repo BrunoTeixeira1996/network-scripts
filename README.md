@@ -1,5 +1,7 @@
 # network scripts
 
-subnet ☑️
+subnet✅
+
 standart vlsm ❌
+
 specific vlsm ❌
