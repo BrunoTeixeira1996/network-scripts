@@ -12,9 +12,11 @@ def getVLSMInfo() -> list:
         network_name =  str(input('Name: '))
         if network_name == 'done':
             break
+        network_address = str(input('Network address: '))
         network_host_number = int(input('Number of hosts: '))
         network_layout.append({
             'network_name' : network_name,
+            'network_address' : network_address,
             'network_host_number' : network_host_number,
             'network_bits' : 0,
             'network_cidr' : 0,
@@ -89,7 +91,14 @@ def transformMask(network: list):
 def calcVLSM() -> str:
     print(getVLSMInfo())
 
-    #calcs VLSMs ...
+    # grab the name of every subnet and ...
+    # calculate subnet address
+    # calculate the first usable host
+    # calculate last usable host
+    # calculate broadcast address
+
+    # calcs VLSMs ...
+
 
     return 'someting'
 
