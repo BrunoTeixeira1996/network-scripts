@@ -1,5 +1,4 @@
 import sys
-import ipaddress
 
 
 # get the VLSM network info
@@ -64,7 +63,6 @@ def getBitsSubnet(network: list):
 
 # get the mask for every subnet
 def getMaskSubnet(network: list):
-
     for i in network:
         i['network_cidr'] = 32 - i['network_bits']
 
@@ -112,37 +110,65 @@ se nao for a primeira subnet, o broadcast fica range - 1
 '''
 
 # gets the Broadcast, first usable host, last usable host and subnet address
-def getLastInfo(network: dict, flag: bool):
-    #if its the first subnet
-    if flag == False:
-        network['network_first_host'] = 1
-        network['network_last_host'] = getRange(network) - 2
-        last_octet = int(network['network_address'].split('.')[-1])
-        res = getRange(network) + last_octet
-        s = list(network['network_address'])
-        s[-1] = str(res - 1)
-        network['network_broadcast'] = ''.join(s)
-        network['network_subnetaddress'] = network['network_address']
-    else:
-        pass
+def getLastInfo(network: dict):
 
-def getSubNetAddress(network: dict):
-    pass
+    network['network_first_host'] = 1
+    network['network_last_host'] = getRange(network) - 2
+    last_octet = int(network['network_address'].split('.')[-1])
+    res = getRange(network) + last_octet
+    s = list(network['network_address'])
+    s[-1] = str(res - 1)
+    network['network_broadcast'] = ''.join(s)
+    network['network_subnetaddress'] = network['network_address']
 
+# sums last octect with an int and returns str
+def sumStringInt(string: str, number: int) -> str:
+    s = list(string)
+    s[-1] = str(number + int(s[-1]))
+    return ''.join(s)
+
+# sums last octect with an int and returns int
+def sumIntString(string: str, number: int) -> int:
+    return  int(string.split('.')[-1]) + number
+
+def sumIntStringAux(string: str, number: int) -> int:
+    aux = string.split('.')[-1]
+    splited_string = string.split('.')[:-1]
+    print('.'.join(splited_string))
+    result_string = '.'.join(splited_string)
+    result = str(int(aux) + number)
+    a = '.' + result
+
+    return result_string + a
+
+
+def getLol(network: list):
+
+    for idx, val in enumerate(network):
+        if idx == 0:
+            pass
+        else:
+            val['network_subnetaddress'] = sumStringInt(network[idx-1]['network_broadcast'], 1)
+            val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
+            val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
+            val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
+            #sumIntStringAux(val['network_subnetaddress'], getRange(val)-1)
+
+    print(network)
 
 # calculate the VLSM
 def calcVLSM() -> str:
     flag = False
+    vlsm = getVLSMInfo()
 
-    for i in getVLSMInfo():
+    for i in vlsm:
         # its the first subnet
         if flag == False:
-            getLastInfo(i,flag)
-            print(i)
+            getLastInfo(i)
             flag = True
         # its not the first subnet
         else:
-            pass
+            getLol(vlsm)
 
 
     return 'someting'
