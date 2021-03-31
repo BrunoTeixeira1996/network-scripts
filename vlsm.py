@@ -7,12 +7,12 @@ def getVLSMInfo() -> list:
     network_layout = []
 
     print("Type 'done' in the network_name input to stop the input")
+    network_address = str(input('Network address: '))
 
     while True:
         network_name =  str(input('Name: '))
         if network_name == 'done':
             break
-        network_address = str(input('Network address: '))
         network_host_number = int(input('Number of hosts: '))
         network_layout.append({
             'network_name' : network_name,
@@ -20,7 +20,11 @@ def getVLSMInfo() -> list:
             'network_host_number' : network_host_number,
             'network_bits' : 0,
             'network_cidr' : 0,
-            'network_subnetmask' : ''
+            'network_subnetmask' : '',
+            'network_subnetaddress' : '',
+            'network_first_host' : '',
+            'network_last_host' : '',
+            'network_broadcast' : ''
         })
 
     # get the number of bits for every subnet
@@ -87,17 +91,47 @@ def transformMask(network: list):
         elif i['network_cidr'] == 32:
             i['network_subnetmask'] = '255.255.255.255'
 
+
+# calculates the range for every subnet
+def getRange(network: dict) -> int:
+    return 256 - int(network['network_subnetmask'].split('.')[-1])
+
+'''
+ir buscar o range de cada subnet
+ter uma flag para ver se é a primeira rede logo o subnet_address começa  no network_address
+se for a primeira subnet, o subnet_address fica = 0
+se for a primeira subnet, o first usable host fica = 1
+se for a primeira subnet, o last usable host fica range - 2
+se for a primeira subnet, o broadcast fica range -1
+
+
+se nao for a primeira subnet, o subnet_address fica = broadcast anterior + 1
+se nao for a primeira subnet, o first usable host fica = subnet_address + 1
+se nao for a primeira subnet, o last usable host fica = range atual - 2
+se nao for a primeira subnet, o broadcast fica range - 1
+'''
+
+'''
+# calculates the range for every subnet
+def getRange(network: dict) -> int:
+    network_range = 256 - int(network['network_subnetmask'].split('.')[-1])
+    last_octet = int(network['network_address'].split('.')[-1])
+
+    # sum network_range + last_octect, convert to string, replace last octect from this result
+    res = network_range + last_octet
+    s = list(network['network_address'])
+    s[-1] =  str(res - 1)
+    network['network_broadcast'] = ''.join(s)
+    print(network['network_broadcast'])
+
+    return network
+'''
+
 # calculate the VLSM
 def calcVLSM() -> str:
-    print(getVLSMInfo())
-
-    # grab the name of every subnet and ...
-    # calculate subnet address
-    # calculate the first usable host
-    # calculate last usable host
-    # calculate broadcast address
-
-    # calcs VLSMs ...
+    #print(getVLSMInfo())
+    for i in getVLSMInfo():
+        print(getRange(i))
 
 
     return 'someting'
