@@ -132,14 +132,16 @@ def sumIntString(string: str, number: int) -> int:
     return  int(string.split('.')[-1]) + number
 
 def sumIntStringAux(string: str, number: int) -> int:
-    aux = string.split('.')[-1]
-    splited_string = string.split('.')[:-1]
-    print('.'.join(splited_string))
-    result_string = '.'.join(splited_string)
-    result = str(int(aux) + number)
-    a = '.' + result
 
-    return result_string + a
+    #split every octect but the last one
+    splited_string = string.split('.')[:-1]
+    #joined every octect with dots
+    result_string = '.'.join(splited_string)
+    #result is the sum of the last octect + the range of the network
+    result = str(int(string.split('.')[-1]) + number)
+
+
+    return result_string + '.' + result
 
 
 def getLol(network: list):
@@ -152,7 +154,7 @@ def getLol(network: list):
             val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
             val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
             val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
-            #sumIntStringAux(val['network_subnetaddress'], getRange(val)-1)
+
 
     print(network)
 
@@ -183,3 +185,10 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+'''
+BUG ao passar de "network_broadcast":"222.37.34.239" para o "network_subnetaddress":"222.37.34.2310",
+BUG tambem aqui  "network_broadcast":"222.37.34.2317"
+
+'''
