@@ -156,10 +156,8 @@ def getLol(network: list):
             val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
 
 
-    print(network)
-
 # calculate the VLSM
-def calcVLSM() -> str:
+def calcVLSM():
     flag = False
     vlsm = getVLSMInfo()
 
@@ -171,9 +169,24 @@ def calcVLSM() -> str:
         # its not the first subnet
         else:
             getLol(vlsm)
+    showOutput(vlsm)
 
+def showOutput(network: list):
+    for i in network:
+        print(f'''
 
-    return 'someting'
+        network_name : {i['network_name']}
+        network_address : {i['network_address']}
+        network_host_number : {i['network_host_number']}
+        network_bits : {i['network_bits']}
+        network_cidr : {i['network_cidr']}
+        network_subnetmask : {i['network_subnetmask']}
+        network_subnetaddress : {i['network_subnetaddress']}
+        network_first_host : {i['network_first_host']}
+        network_last_host : {i['network_last_host']}
+        network_broadcast : {i['network_broadcast']}
+        ''')
+
 
 
 def main():
