@@ -94,24 +94,9 @@ def transformMask(network: list):
 def getRange(network: dict) -> int:
     return 256 - int(network['network_subnetmask'].split('.')[-1])
 
-'''
-ir buscar o range de cada subnet
-ter uma flag para ver se é a primeira rede logo o subnet_address começa  no network_address
-se for a primeira subnet, o network_address fica = 0
-se for a primeira subnet, o first usable host fica = 1
-se for a primeira subnet, o last usable host fica range - 2
-se for a primeira subnet, o broadcast fica range -1
-
-
-se nao for a primeira subnet, o network_address fica = broadcast anterior + 1
-se nao for a primeira subnet, o first usable host fica = subnet_address + 1
-se nao for a primeira subnet, o last usable host fica = range atual - 2
-se nao for a primeira subnet, o broadcast fica range - 1
-'''
 
 # gets the Broadcast, first usable host, last usable host and subnet address
-def getLastInfo(network: dict):
-
+def getFirstNetwork(network: dict):
     network['network_first_host'] = 1
     network['network_last_host'] = getRange(network) - 2
     last_octet = int(network['network_address'].split('.')[-1])
@@ -140,11 +125,10 @@ def sumIntStringAux(string: str, number: int) -> int:
     #result is the sum of the last octect + the range of the network
     result = str(int(string.split('.')[-1]) + number)
 
-
     return result_string + '.' + result
 
 
-def getLol(network: list):
+def getRemainderNetwork(network: list):
 
     for idx, val in enumerate(network):
         if idx == 0:
@@ -164,11 +148,11 @@ def calcVLSM():
     for i in vlsm:
         # its the first subnet
         if flag == False:
-            getLastInfo(i)
+            getFirstNetwork(i)
             flag = True
         # its not the first subnet
         else:
-            getLol(vlsm)
+            getRemainderNetwork(vlsm)
     showOutput(vlsm)
 
 def showOutput(network: list):
