@@ -106,17 +106,19 @@ def getFirstNetwork(network: dict):
     network['network_broadcast'] = ''.join(s)
     network['network_subnetaddress'] = network['network_address']
 
+
 # sums last octect with an int and returns str
 def sumStringInt(string: str, number: int) -> str:
-    s = list(string)
-    s[-1] = str(number + int(s[-1]))
-    return ''.join(s)
+    suma = str(int(string.split('.')[-1]) + number)
+    return string.replace(string.split('.')[-1],suma)
+
 
 # sums last octect with an int and returns int
 def sumIntString(string: str, number: int) -> int:
     return  int(string.split('.')[-1]) + number
 
-def sumIntStringAux(string: str, number: int) -> int:
+# sum for the network_broadcast
+def sumIntStringAux(string: str, number: int) -> str:
 
     #split every octect but the last one
     splited_string = string.split('.')[:-1]
@@ -182,10 +184,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-'''
-BUG ao passar de "network_broadcast":"222.37.34.239" para o "network_subnetaddress":"222.37.34.2310",
-BUG tambem aqui  "network_broadcast":"222.37.34.2317"
-
-'''
