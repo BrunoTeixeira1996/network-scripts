@@ -2,6 +2,6 @@
 
 subnet ☑️
 
-standart vlsm ☑️
+vlsm ☑️
 
-`working with /24 only`
+`vlsm working with /24 only`
