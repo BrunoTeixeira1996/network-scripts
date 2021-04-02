@@ -95,6 +95,17 @@ def getRange(network: dict) -> int:
     return 256 - int(network['network_subnetmask'].split('.')[-1])
 
 
+# this resolves the broadcast bug ...
+def sumIntStringAux(string: str, number: int) -> str:
+
+    #split every octect but the last one
+    splited_string = string.split('.')[:-1]
+    #joined every octect with dots
+    result_string = '.'.join(splited_string)
+    #result is the sum of the last octect + the range of the network
+    result = str(int(string.split('.')[-1]) + number)
+    return result_string + '.' + result
+
 # sums last octect with an int and returns str -> used in subnetaddress and broadcast
 def sumStringInt(string: str, number: int) -> str:
     aux = str(int(string.split('.')[-1]) + number)
@@ -103,44 +114,29 @@ def sumStringInt(string: str, number: int) -> str:
 
 # sums last octect with an int and returns int -> used in first_host and last_host
 def sumIntString(string: str, number: int) -> int:
-    print(f"AQUIIIII -> {int(string.split('.')[-1]) + number}")
     return  int(string.split('.')[-1]) + number
 
 
-# gets info for the first network
-def getFirstNetwork(network: dict):
+# gets info for the vlsm network
+def getNetwork(network: list):
 
-    network['network_subnetaddress'] = network['network_address']
-    network['network_first_host'] = sumIntString(network['network_subnetaddress'],1)
-    network['network_last_host'] = getRange(network) - 2
-    network['network_broadcast'] = sumStringInt(network['network_subnetaddress'], getRange(network) - 1)
-
-# gets info for the remainder networks
-def getRemainderNetwork(network: list):
-
-    for idx, val in enumerate(network):
+    for idx,val in enumerate(network):
         if idx == 0:
-            pass
+            val['network_subnetaddress'] = val['network_address']
+            val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
+            val['network_last_host'] = getRange(val) - 2
+            val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
         else:
             val['network_subnetaddress'] = sumStringInt(network[idx-1]['network_broadcast'], 1)
             val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
             val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
-            val['network_broadcast'] = sumStringInt(val['network_subnetaddress'], getRange(val) - 1)
+            val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
 
 
 # calculate the VLSM
 def calcVLSM():
-    flag = False
     vlsm = getVLSMInfo()
-
-    for i in vlsm:
-        # its the first subnet
-        if flag == False:
-            getFirstNetwork(i)
-            flag = True
-        # its not the first subnet
-        else:
-            getRemainderNetwork(vlsm)
+    getNetwork(vlsm)
     showOutput(vlsm)
 
 def showOutput(network: list):
