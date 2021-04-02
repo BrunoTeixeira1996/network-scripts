@@ -103,6 +103,7 @@ def sumStringInt(string: str, number: int) -> str:
 
 # sums last octect with an int and returns int -> used in first_host and last_host
 def sumIntString(string: str, number: int) -> int:
+    print(f"AQUIIIII -> {int(string.split('.')[-1]) + number}")
     return  int(string.split('.')[-1]) + number
 
 
