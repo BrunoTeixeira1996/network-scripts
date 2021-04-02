@@ -1,5 +1,7 @@
 # network scripts
 
-subnet✅
+subnet ☑️
 
-standart vlsm -> working with /24 only �^|^e
+standart vlsm ☑️
+
+`working with /24 only`
