@@ -176,11 +176,13 @@ def showOutput(network: list):
 
 
 def main():
+    calcVLSM()
+    '''
     if len(sys.argv) > 1:
         calcVLSM()
     else:
         print('bad input')
-
+    '''
 
 if __name__ == '__main__':
     main()
