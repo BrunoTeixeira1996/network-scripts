@@ -2,6 +2,4 @@
 
 subnet✅
 
-standart vlsm ❌
-
-specific vlsm ❌
+standart vlsm -> working with /24 only �^|^e
