@@ -28,12 +28,11 @@ def getVLSMInfo() -> list:
 
     # get the number of bits for every subnet
     getBitsSubnet(network_layout)
-
     # get the mask for every subnet
     getMaskSubnet(network_layout)
-
     # transform cidr mask to a original one
     transformMask(network_layout)
+
     return network_layout
 
 # get how many bits every subnet needs
@@ -63,6 +62,7 @@ def getBitsSubnet(network: list):
 
 # get the mask for every subnet
 def getMaskSubnet(network: list):
+
     for i in network:
         i['network_cidr'] = 32 - i['network_bits']
 
@@ -90,46 +90,31 @@ def transformMask(network: list):
             i['network_subnetmask'] = '255.255.255.255'
 
 
-# calculates the range for every subnet
+# calculates the range of a subnet
 def getRange(network: dict) -> int:
     return 256 - int(network['network_subnetmask'].split('.')[-1])
 
 
-# gets the Broadcast, first usable host, last usable host and subnet address
-def getFirstNetwork(network: dict):
-    network['network_first_host'] = 1
-    network['network_last_host'] = getRange(network) - 2
-    last_octet = int(network['network_address'].split('.')[-1])
-    res = getRange(network) + last_octet
-    s = list(network['network_address'])
-    s[-1] = str(res - 1)
-    network['network_broadcast'] = ''.join(s)
-    network['network_subnetaddress'] = network['network_address']
-
-
-# sums last octect with an int and returns str
+# sums last octect with an int and returns str -> used in subnetaddress and broadcast
 def sumStringInt(string: str, number: int) -> str:
-    suma = str(int(string.split('.')[-1]) + number)
-    return string.replace(string.split('.')[-1],suma)
+    aux = str(int(string.split('.')[-1]) + number)
+    return string.replace(string.split('.')[-1],aux)
 
 
-# sums last octect with an int and returns int
+# sums last octect with an int and returns int -> used in first_host and last_host
 def sumIntString(string: str, number: int) -> int:
     return  int(string.split('.')[-1]) + number
 
-# sum for the network_broadcast
-def sumIntStringAux(string: str, number: int) -> str:
 
-    #split every octect but the last one
-    splited_string = string.split('.')[:-1]
-    #joined every octect with dots
-    result_string = '.'.join(splited_string)
-    #result is the sum of the last octect + the range of the network
-    result = str(int(string.split('.')[-1]) + number)
+# gets info for the first network
+def getFirstNetwork(network: dict):
 
-    return result_string + '.' + result
+    network['network_subnetaddress'] = network['network_address']
+    network['network_first_host'] = sumIntString(network['network_subnetaddress'],1)
+    network['network_last_host'] = getRange(network) - 2
+    network['network_broadcast'] = sumStringInt(network['network_subnetaddress'], getRange(network) - 1)
 
-
+# gets info for the remainder networks
 def getRemainderNetwork(network: list):
 
     for idx, val in enumerate(network):
@@ -139,7 +124,7 @@ def getRemainderNetwork(network: list):
             val['network_subnetaddress'] = sumStringInt(network[idx-1]['network_broadcast'], 1)
             val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
             val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
-            val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
+            val['network_broadcast'] = sumStringInt(val['network_subnetaddress'], getRange(val) - 1)
 
 
 # calculate the VLSM
@@ -177,12 +162,6 @@ def showOutput(network: list):
 
 def main():
     calcVLSM()
-    '''
-    if len(sys.argv) > 1:
-        calcVLSM()
-    else:
-        print('bad input')
-    '''
 
 if __name__ == '__main__':
     main()
