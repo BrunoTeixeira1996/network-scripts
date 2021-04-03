@@ -106,11 +106,13 @@ def sumIntStringAux(string: str, number: int) -> str:
     result = str(int(string.split('.')[-1]) + number)
     return result_string + '.' + result
 
+'''
+Buggy function
 # sums last octect with an int and returns str -> used in subnetaddress and broadcast
 def sumStringInt(string: str, number: int) -> str:
     aux = str(int(string.split('.')[-1]) + number)
-    return string.replace(string.split('.')[-1],aux)
-
+    return string.replace(string[string.rfind('.') + 1:],aux)
+'''
 
 # sums last octect with an int and returns int -> used in first_host and last_host
 def sumIntString(string: str, number: int) -> int:
@@ -124,10 +126,12 @@ def getNetwork(network: list):
         if idx == 0:
             val['network_subnetaddress'] = val['network_address']
             val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
-            val['network_last_host'] = getRange(val) - 2
+            val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
             val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
+
+
         else:
-            val['network_subnetaddress'] = sumStringInt(network[idx-1]['network_broadcast'], 1)
+            val['network_subnetaddress'] = sumIntStringAux(network[idx-1]['network_broadcast'], 1)
             val['network_first_host'] = sumIntString(val['network_subnetaddress'],1)
             val['network_last_host'] = val['network_first_host'] + getRange(val) - 3
             val['network_broadcast'] = sumIntStringAux(val['network_subnetaddress'], getRange(val) - 1)
